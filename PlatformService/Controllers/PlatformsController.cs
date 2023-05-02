@@ -29,7 +29,12 @@ namespace PlatformService.Controllers
 
             var platformItem = _repository.GetAllPlatforms();
 
-            return Ok(_mapper.Map<IEnumerable<PlatformReadDto>>(platformItem)); // 200 OK will return all platforms
+            if (platformItem != null)
+            {
+                return Ok(_mapper.Map<IEnumerable<PlatformReadDto>>(platformItem)); // 200 OK will return all platforms
+            }
+
+            return NotFound(); // This will return a 404 error if the platform is not found
         }
 
         // GET api/platforms/{id}
