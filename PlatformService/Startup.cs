@@ -30,12 +30,16 @@ namespace PlatformService
         {
             // we are using an in-memory database for now
             services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
+            
             // This will add the PlatformRepo class to the dependency injection container
-
             services.AddScoped<IPlatformRepo, PlatformRepo>();
             
-
             services.AddControllers();
+            
+            // This will add the AutoMapper class to the dependency injection container
+            // Mapping our DTOs to our models
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "PlatformService", Version = "v1"});
@@ -59,6 +63,8 @@ namespace PlatformService
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            PrepDb.PrepPopulation(app); // Call the PrepPopulation method from the PrepDb class and pass it the app
         }
     }
 }
