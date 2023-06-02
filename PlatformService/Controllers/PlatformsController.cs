@@ -49,5 +49,23 @@ namespace PlatformService.Controllers
 
             return NotFound(); // This will return a 404 error if the platform is not found
         }
+
+
+        // POST api/platforms
+        [HttpPost]
+        public ActionResult<PlatformReadDto> CreatePlatform(PlatformCreateDto platformCreateDto)
+        {
+            Console.WriteLine("--> Creating Platform....");
+
+            var platformModel = _mapper.Map<Platform>(platformCreateDto);
+            _repository.CreatePlatform(platformModel);
+            _repository.SaveChanges();
+
+            // This will return a 201 Created status code
+            // The second parameter is the object that we want to return
+            // The third parameter is the route that we want to return
+            var platformReadDto = _mapper.Map<PlatformReadDto>(platformModel);
+            return CreatedAtRoute(nameof(GetPlatformById), new {Id = platformReadDto.Id}, platformReadDto);
+        }
     }
 }
